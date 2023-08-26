@@ -1,6 +1,8 @@
 fun main() {
-    println(subarraysWithKDistinct(intArrayOf(1, 2, 1, 2, 3), 2))
-    println(subarraysWithKDistinct(intArrayOf(1, 2, 1, 3, 4), 3))
+//    println(subarraysWithKDistinct(intArrayOf(1, 2, 1, 2, 3), 2))
+//    println(subarraysWithKDistinct(intArrayOf(1, 2, 1, 3, 4), 3))
+//    println(subarraysWithKDistinct(intArrayOf(1, 2), 1))
+//    println(subarraysWithKDistinct(intArrayOf(2, 1, 1, 1, 2), 1))
 }
 
 private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
@@ -19,10 +21,7 @@ private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
 
     fun checkInc(num: Int): Int = (map[num] ?: 0) + 1
 
-    while (true) {
-        if (high == nums.size) {
-            break
-        }
+    while (high < nums.size) {
         if (distinct > k) {
             if (dec(nums[low++]) == 0) { // completely removed number
                 distinct--
@@ -33,6 +32,9 @@ private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
                 println("found!")
             } else {
                 println()
+            }
+            if (low == high) {
+                high++
             }
             continue
         } else if (distinct < k) {
@@ -51,13 +53,15 @@ private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
             high++
             continue
         }
+        print("[$low, $high] = ${nums.drop(low).take(high - low + 1)} $map ")
         // if distinct == k
         if (inc(nums[high]) == 1) { // completely removed number
             distinct++
+            println(":: distinct($distinct) result($result)")
+            continue
         }
+        println(" :: distinct($distinct) result($result) found! 1")
         result++
-        println("[$low, $high] = ${nums.drop(low).take(high - low + 1)} $map :: distinct($distinct) result($result) found! 1")
-
         if (high + 1 == nums.size) {
             println("End of ze line")
             // we have reached the end of the array
