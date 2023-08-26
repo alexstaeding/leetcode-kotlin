@@ -2,7 +2,7 @@ fun main() {
 //    println(subarraysWithKDistinct(intArrayOf(1, 2, 1, 2, 3), 2))
 //    println(subarraysWithKDistinct(intArrayOf(1, 2, 1, 3, 4), 3))
 //    println(subarraysWithKDistinct(intArrayOf(1, 2), 1))
-//    println(subarraysWithKDistinct(intArrayOf(2, 1, 1, 1, 2), 1))
+    println(subarraysWithKDistinct(intArrayOf(2, 1, 1, 1, 2), 1))
 }
 
 private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
@@ -33,7 +33,7 @@ private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
             } else {
                 println()
             }
-            if (low == high) {
+            if (low + k - 1 == high) {
                 high++
             }
             continue
@@ -53,14 +53,14 @@ private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
             high++
             continue
         }
-        print("[$low, $high] = ${nums.drop(low).take(high - low + 1)} $map ")
+        print("[$low, $high]")
         // if distinct == k
         if (inc(nums[high]) == 1) { // completely removed number
             distinct++
-            println(":: distinct($distinct) result($result)")
+            println(" = ${nums.drop(low).take(high - low + 1)} $map :: distinct($distinct) result($result)")
             continue
         }
-        println(" :: distinct($distinct) result($result) found! 1")
+        println(" = ${nums.drop(low).take(high - low + 1)} $map :: distinct($distinct) result($result) found! 1")
         result++
         if (high + 1 == nums.size) {
             println("End of ze line")
@@ -103,8 +103,6 @@ private fun subarraysWithKDistinct(nums: IntArray, k: Int): Int {
             } else {
                 println("[$low, $high] = ${nums.drop(low).take(high - low + 1)} $map :: distinct($distinct) result($result)")
             }
-
-            assert(inc(nums[high + 1]) == 1)
 
             assert(low + k - 1 == high)
         }
