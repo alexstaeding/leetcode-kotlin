@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.10"
+    alias(libs.plugins.kotlin)
     application
 }
 
