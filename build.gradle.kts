@@ -14,3 +14,14 @@ kotlin {
 application {
     mainClass.set("MainKt")
 }
+
+dependencies {
+    testImplementation(libs.kotest.core)
+    testImplementation(libs.kotest.property)
+}
+
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
+}
