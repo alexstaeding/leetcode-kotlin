@@ -16,7 +16,17 @@ class PartialResult(
     }
 
     override fun toString(): String {
-        return "$start:$pos toFind: $toFind currentWord: $currentWord words: $resultWords"
+        return "$start:$pos toFind: $toFind currentWord: $currentWord words: ${resultWords.map { (i, v) -> "$v[$i]" }}"
+    }
+
+    fun checkValid(): Boolean {
+        if (valid) return true
+        if (++pos - start == toFind) {
+            println("Graduated $this")
+            valid = true
+            return true
+        }
+        return false
     }
 
     /**
@@ -27,11 +37,7 @@ class PartialResult(
             return true
         }
         println("Inc $this")
-        if (++pos - start == toFind) {
-            println("Graduated $this")
-            valid = true
-            return true
-        }
+        if (checkValid()) return true
         if (pos - start == resultWords.size * currentWord.value.length) {
             val nextWords = wordMap[c]?.filter { it !in resultWords }
             if (nextWords.isNullOrEmpty()) {
@@ -80,5 +86,5 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
         // get all words that start with this letter
         wordMap[s[i]]?.forEach { results += PartialResult(i, it, len * words.size, wordMap) }
     }
-    return results.filter { it.valid }.map { it.start }
+    return results.onEach { it.checkValid() }.filter { it.valid }.map { it.start }.distinct()
 }
