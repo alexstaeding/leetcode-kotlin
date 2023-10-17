@@ -45,8 +45,8 @@ class PartialResult(
                         continued = candidate
                     } else {
                         val splitWords = ownWords.toMutableMap()
-                        splitWords.compute(continued) { _, v -> v!! + 1}
-                        splitWords.compute(candidate) { _, v -> v!! - 1}
+                        splitWords.compute(continued) { _, v -> v!! + 1 }
+                        splitWords.compute(candidate) { _, v -> v!! - 1 }
                         newResults.add(PartialResult(start, pos, candidate, toFind, charWordMap, splitWords, copyWordCountMap = false))
                     }
                 }
@@ -67,8 +67,8 @@ class PartialResult(
 }
 
 fun findSubstring(s: String, words: Array<String>): List<Int> {
-    val len = words[0].length
-    if (len * words.size > s.length) return emptyList()
+    val len = words[0].length * words.size
+    if (len > s.length) return emptyList()
     val wordMap = words.groupBy { it[0] }.mapValues { (_, v) -> v.distinct() }
     val wordCountMap = words.groupingBy { it }.eachCount()
     val results = mutableListOf<PartialResult>()
@@ -83,8 +83,10 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
         results += newResults
         results -= removeResults
 
-        // get all words that start with this letter
-        wordMap[s[i]]?.forEach { results += PartialResult(i, i, it, len * words.size, wordMap, wordCountMap.toMutableMap()) }
+        if (i <= s.length - len) {
+            // get all words that start with this letter
+            wordMap[s[i]]?.forEach { results += PartialResult(i, i, it, len, wordMap, wordCountMap.toMutableMap()) }
+        }
     }
     return results.onEach { it.checkValid() }.filter { it.valid }.map { it.start }.distinct()
 }
