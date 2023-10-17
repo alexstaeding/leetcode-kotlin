@@ -11,10 +11,6 @@ class PartialResult(
     private val resultWords = linkedSetOf(startWord)
     var valid = false
 
-    init {
-        println("Starting partial result at position $start with word '$startWord'")
-    }
-
     override fun toString(): String {
         return "$start:$pos toFind: $toFind currentWord: $currentWord words: ${resultWords.map { (i, v) -> "$v[$i]" }}"
     }
@@ -22,7 +18,6 @@ class PartialResult(
     fun checkValid(): Boolean {
         if (valid) return true
         if (++pos - start == toFind) {
-            println("Graduated $this")
             valid = true
             return true
         }
@@ -36,13 +31,11 @@ class PartialResult(
         if (valid) {
             return true
         }
-        println("Inc $this")
         if (checkValid()) return true
         if (pos - start == resultWords.size * currentWord.value.length) {
             val nextWords = wordMap[c]?.filter { it !in resultWords }
             if (nextWords.isNullOrEmpty()) {
                 // die
-                println("No future for $this")
                 return false
             }
             currentWord = nextWords[0]
@@ -50,27 +43,22 @@ class PartialResult(
             if (nextWords.size > 1) {
                 // split
                 for (i in 1..<nextWords.size) {
-                    println("Splitting $this for ${nextWords[i]}")
                     newResults.add(PartialResult(pos, nextWords[i], toFind, wordMap))
                 }
             }
         } else {
             // check that the current word keeps matching
             val check = currentWord.value[(pos - start) % currentWord.value.length]
-            println("Checking ${(pos - start) % currentWord.value.length} ($check) == $c)")
             if (check != c) {
                 // die
-                println("No match for $this")
                 return false
             }
         }
-        println("Life goes on for $this")
         return true
     }
 }
 
 fun findSubstring(s: String, words: Array<String>): List<Int> {
-    println("Searching $s")
     val len = words[0].length
     if (len * words.size > s.length) return emptyList()
     val wordMap = words.asSequence()
@@ -79,7 +67,6 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
     val results = mutableListOf<PartialResult>()
     for (i in s.indices) {
         val newResults = mutableListOf<PartialResult>()
-        println("==== ${s[i]}[$i]")
         results.filterNot { it.inc(s[i], newResults) }
             .forEach { results.remove(it) }
         results += newResults
