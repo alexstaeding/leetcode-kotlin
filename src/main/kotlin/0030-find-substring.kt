@@ -11,10 +11,6 @@ class PartialResult(
     private val resultWords = linkedSetOf(startWord)
     var valid = false
 
-    override fun toString(): String {
-        return "$start:$pos toFind: $toFind currentWord: $currentWord words: ${resultWords.map { (i, v) -> "$v[$i]" }}"
-    }
-
     fun checkValid(): Boolean {
         if (valid) return true
         if (++pos - start == toFind) {
@@ -61,15 +57,19 @@ class PartialResult(
 fun findSubstring(s: String, words: Array<String>): List<Int> {
     val len = words[0].length
     if (len * words.size > s.length) return emptyList()
-    val wordMap = words.asSequence()
-        .withIndex()
-        .groupBy { it.value[0] }
+    val wordMap = words.withIndex().groupBy { it.value[0] }
     val results = mutableListOf<PartialResult>()
     for (i in s.indices) {
         val newResults = mutableListOf<PartialResult>()
-        results.filterNot { it.inc(s[i], newResults) }
-            .forEach { results.remove(it) }
+        val removeResults = mutableSetOf<PartialResult>()
+        for (r in results) {
+            if (!r.inc(s[i], newResults)) {
+                removeResults.add(r)
+            }
+        }
         results += newResults
+        results -= removeResults
+
         // get all words that start with this letter
         wordMap[s[i]]?.forEach { results += PartialResult(i, it, len * words.size, wordMap) }
     }
