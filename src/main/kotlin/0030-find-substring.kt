@@ -1,14 +1,14 @@
-typealias OrderedWord = IndexedValue<String>
-
 class PartialResult(
     val start: Int,
-    startWord: OrderedWord,
+    startWord: String,
     private val toFind: Int,
-    private val wordMap: Map<Char, List<OrderedWord>>,
+    private val charWordMap: Map<Char, List<String>>,
+    private val wordCountMap: Map<String, Int>,
 ) {
     private var currentWord = startWord
     private var pos = start
-    private val resultWords = linkedSetOf(startWord)
+    private val ownWords = wordCountMap.toMutableMap()
+        .also { it.compute(startWord) { _, v -> v!! - 1 } }
     var valid = false
 
     fun checkValid(): Boolean {
@@ -28,23 +28,23 @@ class PartialResult(
             return true
         }
         if (checkValid()) return true
-        if (pos - start == resultWords.size * currentWord.value.length) {
-            val nextWords = wordMap[c]?.filter { it !in resultWords }
-            if (nextWords.isNullOrEmpty()) {
-                // die
-                return false
-            }
-            currentWord = nextWords[0]
-            resultWords += currentWord
-            if (nextWords.size > 1) {
-                // split
-                for (i in 1..<nextWords.size) {
-                    newResults.add(PartialResult(pos, nextWords[i], toFind, wordMap))
+        if ((pos - start) % currentWord.length == 0) {
+            var continued = 0
+            for (candidate in charWordMap[c] ?: return false) {
+                if (ownWords.compute(candidate) { _, v -> (v ?: 0) - 1 }!! >= 0) {
+                    if (continued++ == 0) {
+                        currentWord = candidate
+                    } else {
+                        newResults.add(PartialResult(pos, candidate, toFind, charWordMap, wordCountMap))
+                    }
                 }
+            }
+            if (continued == 0) {
+                return false
             }
         } else {
             // check that the current word keeps matching
-            val check = currentWord.value[(pos - start) % currentWord.value.length]
+            val check = currentWord[(pos - start) % currentWord.length]
             if (check != c) {
                 // die
                 return false
@@ -57,7 +57,8 @@ class PartialResult(
 fun findSubstring(s: String, words: Array<String>): List<Int> {
     val len = words[0].length
     if (len * words.size > s.length) return emptyList()
-    val wordMap = words.withIndex().groupBy { it.value[0] }
+    val wordMap = words.groupBy { it[0] }.mapValues { (_, v) -> v.distinct() }
+    val wordCountMap = words.groupingBy { it }.eachCount()
     val results = mutableListOf<PartialResult>()
     for (i in s.indices) {
         val newResults = mutableListOf<PartialResult>()
@@ -71,7 +72,7 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
         results -= removeResults
 
         // get all words that start with this letter
-        wordMap[s[i]]?.forEach { results += PartialResult(i, it, len * words.size, wordMap) }
+        wordMap[s[i]]?.forEach { results += PartialResult(i, it, len * words.size, wordMap, wordCountMap) }
     }
     return results.onEach { it.checkValid() }.filter { it.valid }.map { it.start }.distinct()
 }
