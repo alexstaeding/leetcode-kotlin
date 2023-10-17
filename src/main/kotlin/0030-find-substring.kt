@@ -1,13 +1,15 @@
+typealias OrderedWord = IndexedValue<String>
+
 class PartialResult(
     val start: Int,
-    startWord: String,
+    startWord: OrderedWord,
     private val toFind: Int,
-    private val wordMap: Map<Char, List<String>>,
+    private val wordMap: Map<Char, List<OrderedWord>>,
 ) {
     private var currentWord = startWord
     private var pos = start
     private val resultWords = linkedSetOf(startWord)
-    private var valid = false
+    var valid = false
 
     init {
         println("Starting partial result at position $start with word '$startWord'")
@@ -30,8 +32,7 @@ class PartialResult(
             valid = true
             return true
         }
-        if (pos - start == resultWords.size * currentWord.length) {
-
+        if (pos - start == resultWords.size * currentWord.value.length) {
             val nextWords = wordMap[c]?.filter { it !in resultWords }
             if (nextWords.isNullOrEmpty()) {
                 // die
@@ -49,8 +50,8 @@ class PartialResult(
             }
         } else {
             // check that the current word keeps matching
-            val check = currentWord[(pos - start) % currentWord.length]
-            println("Checking ${(pos - start) % currentWord.length} ($check) == $c)")
+            val check = currentWord.value[(pos - start) % currentWord.value.length]
+            println("Checking ${(pos - start) % currentWord.value.length} ($check) == $c)")
             if (check != c) {
                 // die
                 println("No match for $this")
@@ -66,7 +67,9 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
     println("Searching $s")
     val len = words[0].length
     if (len * words.size > s.length) return emptyList()
-    val wordMap = words.groupBy { it[0] }
+    val wordMap = words.asSequence()
+        .withIndex()
+        .groupBy { it.value[0] }
     val results = mutableListOf<PartialResult>()
     for (i in s.indices) {
         val newResults = mutableListOf<PartialResult>()
@@ -77,5 +80,5 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
         // get all words that start with this letter
         wordMap[s[i]]?.forEach { results += PartialResult(i, it, len * words.size, wordMap) }
     }
-    return results.map { it.start }
+    return results.filter { it.valid }.map { it.start }
 }

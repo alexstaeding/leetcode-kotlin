@@ -7,10 +7,10 @@ class FindSubstringTest : FunSpec({
             "barfoothefoobarman",
             arrayOf("foo", "bar")
         ).sorted() shouldBe listOf(0, 9)
-//        findSubstring(
-//            "wordgoodgoodgoodbestword",
-//            arrayOf("word", "good", "best", "word")
-//        ).sorted() shouldBe listOf()
+        findSubstring(
+            "wordgoodgoodgoodbestword",
+            arrayOf("word", "good", "best", "word")
+        ).sorted() shouldBe listOf()
         findSubstring(
             "barfoofoobarthefoobarman",
             arrayOf("bar", "foo", "the")
