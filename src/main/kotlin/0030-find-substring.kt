@@ -5,15 +5,10 @@ class PartialResult(
     private val toFind: Int,
     private val charWordMap: Map<Char, List<String>>,
     wordCountMap: MutableMap<String, Int>,
-    copyWordCountMap: Boolean = true,
 ) {
     private var currentWord = startWord
-    private val ownWords = if (copyWordCountMap) {
-        wordCountMap.toMutableMap()
-            .also { it.compute(startWord) { _, v -> v!! - 1 } }
-    } else {
-        wordCountMap
-    }
+    private val ownWords = wordCountMap
+        .also { it.compute(startWord) { _, v -> v!! - 1 } }
     var valid = false
 
 
@@ -46,8 +41,7 @@ class PartialResult(
                     } else {
                         val splitWords = ownWords.toMutableMap()
                         splitWords.compute(continued) { _, v -> v!! + 1 }
-                        splitWords.compute(candidate) { _, v -> v!! - 1 }
-                        newResults.add(PartialResult(start, pos, candidate, toFind, charWordMap, splitWords, copyWordCountMap = false))
+                        newResults.add(PartialResult(start, pos, candidate, toFind, charWordMap, splitWords))
                     }
                 }
             }
