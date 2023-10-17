@@ -26,9 +26,16 @@ class FindSubstringTest : FunSpec({
             arrayOf("word", "good", "best", "good")
         ).sorted() shouldBe listOf(8)
     }
-    test("bcabbcaabbccacacbabccacaababcbb") {
-        findSubstring("bcabbcaabbccacacbabccacaababcbb",
-            arrayOf("c","b","a","c","a","a","a","b","c")
+    test("bcabbcaabbccacacbabccacaababcbb = [6, 16, 17, 18, 19, 20]") {
+        findSubstring(
+            "bcabbcaabbccacacbabccacaababcbb",
+            arrayOf("c", "b", "a", "c", "a", "a", "a", "b", "c")
         ).sorted() shouldBe listOf(6, 16, 17, 18, 19, 20)
+    }
+    test("bccbcc = [0]") {
+        findSubstring(
+            "bccbcc",
+            arrayOf("bc", "cc", "cb")
+        ).sorted() shouldBe listOf(0)
     }
 })

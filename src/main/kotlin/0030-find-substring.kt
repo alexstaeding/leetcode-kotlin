@@ -1,12 +1,12 @@
 class PartialResult(
     val start: Int,
+    private var pos: Int,
     startWord: String,
     private val toFind: Int,
     private val charWordMap: Map<Char, List<String>>,
     private val wordCountMap: Map<String, Int>,
 ) {
     private var currentWord = startWord
-    private var pos = start
     private val ownWords = wordCountMap.toMutableMap()
         .also { it.compute(startWord) { _, v -> v!! - 1 } }
     var valid = false
@@ -31,11 +31,13 @@ class PartialResult(
         if ((pos - start) % currentWord.length == 0) {
             var continued = 0
             for (candidate in charWordMap[c] ?: return false) {
-                if (ownWords.compute(candidate) { _, v -> (v ?: 0) - 1 }!! >= 0) {
+                val candidateCount = ownWords[candidate] ?: 0
+                if (candidateCount > 0) {
                     if (continued++ == 0) {
+                        ownWords[candidate] = candidateCount - 1
                         currentWord = candidate
                     } else {
-                        newResults.add(PartialResult(pos, candidate, toFind, charWordMap, wordCountMap))
+                        newResults.add(PartialResult(start, pos, candidate, toFind, charWordMap, wordCountMap))
                     }
                 }
             }
@@ -72,7 +74,7 @@ fun findSubstring(s: String, words: Array<String>): List<Int> {
         results -= removeResults
 
         // get all words that start with this letter
-        wordMap[s[i]]?.forEach { results += PartialResult(i, it, len * words.size, wordMap, wordCountMap) }
+        wordMap[s[i]]?.forEach { results += PartialResult(i, i, it, len * words.size, wordMap, wordCountMap) }
     }
     return results.onEach { it.checkValid() }.filter { it.valid }.map { it.start }.distinct()
 }
