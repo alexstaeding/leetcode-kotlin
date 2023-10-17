@@ -38,4 +38,10 @@ class FindSubstringTest : FunSpec({
             arrayOf("bc", "cc", "cb")
         ).sorted() shouldBe listOf(0)
     }
+    test("aacabacaab = [3]") {
+        findSubstring(
+            "aacabacaab",
+            arrayOf("aa","ac","ab")
+        ).sorted() shouldBe listOf(3)
+    }
 })
