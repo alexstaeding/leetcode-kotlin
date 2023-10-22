@@ -2,45 +2,44 @@ import java.util.Queue
 import java.util.ArrayDeque
 
 fun isMatch(s: String, p: String): Boolean {
-    val stateStack = ArrayDeque<State>(p.length)
+    val stateStack: MutableList<State> = ArrayList(p.length)
     stateStack.add(State())
+    var lastChar = ' '
     for (c in p) {
         when (c) {
-            '*' -> stateStack.last().addSelfStar()
-            '.' -> {
-                val newState = State()
-                stateStack.last().addAnyTransition(newState)
-                stateStack.add(newState)
+            '*' -> {
+                stateStack.removeLast()
+                stateStack.last().addTransition(lastChar)
             }
             else -> {
                 val newState = State()
-                stateStack.last().addTransition { dC -> newState.takeIf { dC == c } }
+                stateStack.last().addTransition(c, newState)
                 stateStack.add(newState)
+                lastChar = c
             }
         }
     }
+    stateStack.last().accepted = true
     return stateStack.first().consume(s.toCollection(ArrayDeque()))
 }
 
 class State {
-    private val transitions = mutableListOf<(Char) -> State?>()
+    private var anyTransition: State? = null
+    private val transitions = mutableMapOf<Char, State>()
+    var accepted = false
 
-    fun addTransition(transition: (Char) -> State?) {
-        transitions += transition
-    }
-
-    fun addSelfStar() {
-        transitions += { this }
-    }
-
-    fun addAnyTransition(to: State) {
-        transitions += { to }
+    fun addTransition(char: Char, target: State = this) = when (char) {
+        '.' -> anyTransition = target
+        else -> transitions[char] = target
     }
 
     fun consume(seq: Queue<Char>): Boolean {
-        val next = seq.poll() ?: return true
-        for (transition in transitions) {
-            return (transition(next) ?: continue).consume(seq)
+        val next = seq.poll() ?: return accepted
+        if (anyTransition?.consume(seq) == true) {
+            return true
+        }
+        if (transitions[next]?.consume(seq) == true) {
+            return true
         }
         return false
     }

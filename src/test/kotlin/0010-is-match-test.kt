@@ -11,4 +11,13 @@ class IsMatchTest : FunSpec({
     test("s = \"ab\", p = \".*\" -> true") {
         isMatch("ab", ".*") shouldBe true
     }
+    test("s = \"aab\", p = \"c*a*b\" -> true") {
+        isMatch("aab", "c*a*b") shouldBe true
+    }
+    test("s = \"mississippi\", p = \"mis*is*p*.\" -> false") {
+        isMatch("mississippi", "mis*is*p*.") shouldBe false
+    }
+    test("s = \"ab\", p = \".*c\" -> false") {
+        isMatch("ab", ".*c") shouldBe false
+    }
 })
