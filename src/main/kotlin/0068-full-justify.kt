@@ -1,18 +1,14 @@
 fun fullJustify(words: Array<String>, maxWidth: Int): List<String> {
     // first pick which words go on which line
-    val lines: MutableList<MutableList<String>> = mutableListOf()
+    val lines = mutableListOf(mutableListOf<String>())
     var width = 0
     for (word in words) {
-        if (width + word.length >= maxWidth) {
+        if (width + word.length + lines.last().size > maxWidth) {
             width = word.length
             lines.add(mutableListOf(word))
         } else {
-            width += word.length + 1
-            if (lines.isEmpty()) {
-                lines.add(mutableListOf(word))
-            } else {
-                lines.last().add(word)
-            }
+            width += word.length
+            lines.last().add(word)
         }
     }
     return lines.withIndex().map { (index, line) ->

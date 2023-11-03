@@ -51,4 +51,14 @@ class FullJustifyTest : FunSpec({
             "few.  "
         )
     }
+    test("words = [\"a\",\"b\",\"c\",\"d\",\"e\"]. maxWidth = 3") {
+        fullJustify(
+            arrayOf("a", "b", "c", "d", "e"),
+            3
+        ) shouldBe listOf(
+            "a b",
+            "c d",
+            "e  "
+        )
+    }
 })
