@@ -38,4 +38,17 @@ class FullJustifyTest : FunSpec({
             "do                  "
         )
     }
+    test("words = [\"Listen\",\"to\",\"many,\",\"speak\",\"to\",\"a\",\"few.\"], maxWidth = 6") {
+        fullJustify(
+            arrayOf("Listen", "to", "many,", "speak", "to", "a", "few."),
+            6
+        ) shouldBe listOf(
+            "Listen",
+            "to    ",
+            "many, ",
+            "speak ",
+            "to   a",
+            "few.  "
+        )
+    }
 })
