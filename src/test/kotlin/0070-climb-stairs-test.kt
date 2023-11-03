@@ -17,4 +17,7 @@ class ClimbStairsTest : FunSpec({
     test("n = 5 -> 8") {
         climbStairs(5) shouldBe 8
     }
+    test("n = 35") {
+        climbStairs(35) shouldBe 14930352
+    }
 })
