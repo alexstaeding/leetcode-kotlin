@@ -1,14 +1,15 @@
 fun trap(height: IntArray): Int {
     var currentHeight = height.max()
     var totalWater = 0
+    val columns = mutableSetOf<Int>()
     while (currentHeight > 0) {
         // get positions of columns that are at least this tall
-        val columns = height
-            .asSequence()
-            .withIndex()
-            .filter { (_, h) -> h >= currentHeight }
-            .map { (i, _) -> i }
-            .toSet()
+
+        for (i in height.indices) {
+            if (height[i] == currentHeight) {
+                columns.add(i)
+            }
+        }
 
         currentHeight--
 
