@@ -11,4 +11,7 @@ class RemoveNthFromEndTest : FunSpec({
     test("head = [1, 2], n = 1") {
         removeNthFromEnd(listOf(1, 2).toListNodes(), 1) shouldBe listOf(1).toListNodes()
     }
+    test("head = [1, 2], n = 2") {
+        removeNthFromEnd(listOf(1, 2).toListNodes(), 2) shouldBe listOf(2).toListNodes()
+    }
 })

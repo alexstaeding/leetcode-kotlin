@@ -1,5 +1,24 @@
 data class ListNode(var `val`: Int) {
     var next: ListNode? = null
+
+    override fun toString(): String {
+        return if (next == null) {
+            "$`val`"
+        } else {
+            "$`val`, $next"
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is ListNode) return false
+        return `val` == other.`val` && next == other.next
+    }
+
+    override fun hashCode(): Int {
+        var result = `val`
+        result = 31 * result + (next?.hashCode() ?: 0)
+        return result
+    }
 }
 
 fun List<Int>.toListNodes(): ListNode? {
