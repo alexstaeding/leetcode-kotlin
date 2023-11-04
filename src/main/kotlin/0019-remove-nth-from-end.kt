@@ -6,19 +6,21 @@ fun removeNthFromEnd(head: ListNode?, n: Int): ListNode? {
     var slow = head
     var fast = head
 
-    var i = 0
-    while (i < n) {
-        fast = fast?.next
-        i++
+    repeat(n) {
+        fast = fast!!.next
     }
+
     if (fast == null) {
         // remove first element
         return head.next
     }
 
-    while (fast?.next != null) {
-        slow = slow?.next
-        fast = fast.next
+    while (true) {
+        fast = fast!!.next
+        if (fast == null) {
+            break
+        }
+        slow = slow!!.next
     }
     slow!!.next = slow.next!!.next
 
