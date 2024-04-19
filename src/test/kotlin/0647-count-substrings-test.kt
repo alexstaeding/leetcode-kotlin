@@ -11,4 +11,7 @@ class CountSubstringsTest : FunSpec({
     test("countSubstrings(\"abba\") == 6") {
         countSubstrings("abba") shouldBe 6
     }
+    test("countSubstrings(\"xkjkqlajprjwefilxgpdpebieswu\") == 30") {
+        countSubstrings("xkjkqlajprjwefilxgpdpebieswu") shouldBe 30
+    }
 })

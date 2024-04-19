@@ -1,19 +1,25 @@
-fun countSubstrings(
-    s: String,
-    start: Int,
-    end: Int,
-): Set<Pair<Int, Int>> {
-    if (start == end) {
-        return setOf(start to end)
+fun countSubstrings(s: String): Int {
+    return s.indices.sumOf { i ->
+        var radius = 0
+        while (true) {
+            if (i - radius >= 0 && i + radius < s.length &&
+                s[i - radius] == s[i + radius]) {
+                radius++
+            } else {
+                break
+            }
+        }
+        radius
+    } + s.indices.sumOf { i ->
+        var radius = 0
+        while (true) {
+            if (i - radius >= 0 && i + 1 + radius < s.length &&
+                s[i - radius] == s[i + 1 + radius]) {
+                radius++
+            } else {
+                break
+            }
+        }
+        radius
     }
-    val len = end - start + 1
-    val half = len / 2
-    val self = if ((0..<half).all {
-            s[start + it] == s[end - it]
-        }) setOf(start to end) else setOf()
-    return self +
-        countSubstrings(s, start + 1, end) +
-        countSubstrings(s, start, end - 1)
 }
-
-fun countSubstrings(s: String): Int = countSubstrings(s, 0, s.length - 1).size
