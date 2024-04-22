@@ -2,6 +2,11 @@ import java.util.PriorityQueue
 import kotlin.math.absoluteValue
 
 fun openLock(deadends: Array<String>, target: String): Int {
+
+    if (deadends.contains("0000")) {
+        return -1
+    }
+
     data class Pos(val a: Int, val b: Int, val c: Int, val d: Int) {
         constructor(value: String) : this(value[0].digitToInt(), value[1].digitToInt(), value[2].digitToInt(), value[3].digitToInt())
 
