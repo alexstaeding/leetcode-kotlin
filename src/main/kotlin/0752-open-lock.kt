@@ -25,8 +25,16 @@ fun openLock(deadends: Array<String>, target: String): Int {
 
     queue.add(Node(startPos))
 
+    val visited = mutableSetOf<Pos>()
+
     while (queue.isNotEmpty()) {
         val next = queue.poll()
+
+        if (next.pos in visited) {
+            continue
+        }
+        visited.add(next.pos)
+
         if (next.pos == targetPos) {
             return next.getDepth()
         }
