@@ -1,5 +1,6 @@
 import java.util.PriorityQueue
-import kotlin.math.absoluteValue
+import kotlin.math.abs
+import kotlin.math.min
 
 fun openLock(deadends: Array<String>, target: String): Int {
 
@@ -10,11 +11,10 @@ fun openLock(deadends: Array<String>, target: String): Int {
     data class Pos(val a: Int, val b: Int, val c: Int, val d: Int) {
         constructor(value: String) : this(value[0].digitToInt(), value[1].digitToInt(), value[2].digitToInt(), value[3].digitToInt())
 
+        private fun distance(a: Int, b: Int) = min(abs(a - b), 10 - abs(a - b)) * min(abs(a - b), 10 - abs(a - b))
+
         fun distanceTo(other: Pos): Int =
-            (this.a - other.a).absoluteValue +
-                (this.b - other.b).absoluteValue +
-                (this.c - other.c).absoluteValue +
-                (this.d - other.d).absoluteValue
+            distance(a, other.a) + distance(b, other.b) + distance(c, other.c) + distance(d, other.d)
     }
 
     class Node(val pos: Pos, val prev: Node? = null) {
