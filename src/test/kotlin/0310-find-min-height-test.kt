@@ -9,4 +9,13 @@ class FindMinHeightTest : FunSpec({
     test("findMinHeightTrees(6, [[3, 0], [3, 1], [3, 2], [3, 4], [5, 4]])") {
         findMinHeightTrees(6, arrayOf(intArrayOf(3, 0), intArrayOf(3, 1), intArrayOf(3, 2), intArrayOf(3, 4), intArrayOf(5, 4))) shouldBe listOf(3, 4)
     }
+
+    test("findMinHeightTrees(1, [])") {
+        findMinHeightTrees(1, emptyArray()) shouldBe listOf(0)
+    }
+
+    // huge
+    test("findMinHeightTrees(10000, Array(9999) { intArrayOf(it, it + 1) })") {
+        findMinHeightTrees(10000, Array(9999) { intArrayOf(it, it + 1) }) shouldBe listOf(4999, 5000)
+    }
 })

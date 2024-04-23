@@ -15,11 +15,20 @@ fun findMinHeightTrees(n: Int, edges: Array<IntArray>): List<Int> {
     // prev, node -> min height
     val cache = HashMap<Pair<Int, Int>, Int>(n)
 
-    fun Node.getDepth(next: Int): Int = cache.getOrPut(id to next) {
-        1 + (lookup[next].filter { it != id }.maxOfOrNull { Node(next, depth + 1).getDepth(it) } ?: 0)
+    data class Arguments(val prev: Node, val next: Int)
+
+    var outerCalls = 0
+    var innerCalls = 0
+
+    val getDepth = DeepRecursiveFunction<Arguments, Int> { (prev, next) ->
+        outerCalls++
+        cache.getOrPut(prev.id to next) {
+            innerCalls++
+            1 + (lookup[next].filter { it != prev.id }.maxOfOrNull { callRecursive(Arguments(Node(next, prev.depth + 1), it)) } ?: 0)
+        }
     }
 
-    fun Node.getDepth(): Int = lookup[id].maxOf { getDepth(it) } + 1
+    fun Node.getDepth(): Int = lookup[id].maxOf { getDepth(Arguments(this, it)) } + 1
 
     var minTreeSize = n
     val roots = mutableListOf<Int>()
@@ -35,10 +44,7 @@ fun findMinHeightTrees(n: Int, edges: Array<IntArray>): List<Int> {
         }
     }
 
-    println("Cache:")
-    for ((k, v) in cache) {
-        println("$k -> $v")
-    }
+    println("nodes = $n, outerCalls = $outerCalls, innerCalls = $innerCalls, cacheSize = ${cache.size}")
 
     return roots
 }
