@@ -1,29 +1,12 @@
 import java.util.PriorityQueue
 
 fun minFallingPathSum(grid: Array<IntArray>): Int {
-    data class Node(val x: Int, val y: Int, val prev: Node? = null) {
-        fun sum(): Int = generateSequence(this) { it.prev }.sumOf { grid[it.y][it.x] }
-    }
-
-    val queue = PriorityQueue<Node> { l, r -> l.sum().compareTo(r.sum()) }
-    repeat(grid[0].size) { x -> queue.add(Node(x, 0)) }
-
-    val solutions = mutableSetOf<Int>()
-
-    while (queue.isNotEmpty()) {
-        val current: Node = queue.poll()
-        if (current.y == grid.size - 1) {
-            solutions.add(current.sum())
-            if (solutions.size == grid[0].size) {
-                break
-            }
-            continue
-        }
-        repeat(grid[0].size) { x ->
-            if (x != current.x) {
-                queue.add(Node(x, current.y + 1, current))
-            }
+    var lastBest = PriorityQueue<IndexedValue<Int>> { (_, l), (_, r) -> l.compareTo(r) }
+    grid[0].withIndex().forEach { lastBest.add(it) }
+    grid.asSequence().drop(1).forEach { row ->
+        lastBest = row.withIndex().mapTo(PriorityQueue<IndexedValue<Int>> { (_, l), (_, r) -> l.compareTo(r) }) { (index, value) ->
+            IndexedValue(index, value + lastBest.asSequence().filter { (lastIndex) -> index != lastIndex }.minOf { (_, v) -> v })
         }
     }
-    return solutions.min()
+    return lastBest.minOf { (_, v) -> v }
 }
