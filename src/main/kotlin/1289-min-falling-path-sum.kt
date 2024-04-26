@@ -14,6 +14,9 @@ fun minFallingPathSum(grid: Array<IntArray>): Int {
         val current: Node = queue.poll()
         if (current.y == grid.size - 1) {
             solutions.add(current.sum())
+            if (solutions.size == grid[0].size) {
+                break
+            }
             continue
         }
         repeat(grid[0].size) { x ->
