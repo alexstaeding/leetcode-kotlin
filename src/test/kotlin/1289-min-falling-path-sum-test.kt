@@ -11,4 +11,15 @@ class MinFallingPathSumTest : FunSpec({
             )
         ) shouldBe 13
     }
+    test("minFallingPathSum([[-37,51,-36,34,-22],[82,4,30,14,38],[-68,-52,-92,65,-85],[-49,-3,-77,8,-19],[-60,-71,-21,-62,-73]])") {
+        minFallingPathSum(
+            arrayOf(
+                intArrayOf(-37, 51, -36, 34, -22),
+                intArrayOf(82, 4, 30, 14, 38),
+                intArrayOf(-68, -52, -92, 65, -85),
+                intArrayOf(-49, -3, -77, 8, -19),
+                intArrayOf(-60, -71, -21, -62, -73),
+            )
+        ) shouldBe -268
+    }
 })
