@@ -20,3 +20,7 @@ fun findMaxK(nums: IntArray): Int {
         }
     }
 }
+
+// Shorter, but worse performance:
+// val numSet = nums.toSet()
+// return nums.asSequence().filter { -it in numSet }.maxOrNull() ?: -1
