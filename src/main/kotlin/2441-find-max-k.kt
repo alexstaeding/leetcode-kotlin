@@ -12,17 +12,16 @@ fun findMaxK(nums: IntArray): Int {
     var topNeg = negatives.poll()
     var topPos = positives.poll()
 
-    while (negatives.isNotEmpty() && positives.isNotEmpty()) {
+    while (true) {
+        println("$topNeg $topPos")
         if (topPos == -topNeg) {
             return topPos
         }
 
         if (topPos > -topNeg) {
-            topPos = positives.poll()
+            topPos = positives.poll() ?: return -1
         } else if (-topNeg > topPos) {
-            topNeg = negatives.poll()
+            topNeg = negatives.poll() ?: return -1
         }
     }
-
-    return -1
 }
