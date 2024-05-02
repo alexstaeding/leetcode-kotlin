@@ -9,8 +9,8 @@ fun findMaxK(nums: IntArray): Int {
             positives.add(num)
         }
     }
-    var topNeg = negatives.poll()
-    var topPos = positives.poll()
+    var topNeg = negatives.poll() ?: return -1
+    var topPos = positives.poll() ?: return -1
 
     while (true) {
         println("$topNeg $topPos")

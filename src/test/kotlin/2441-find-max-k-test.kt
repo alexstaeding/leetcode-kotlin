@@ -14,4 +14,10 @@ class FindMaxKTest : FunSpec({
     test("findMaxK([-25, 25, -27, 45, 31, 46, 46, 21])") {
         findMaxK(intArrayOf(-25, 25, -27, 45, 31, 46, 46, 21)) shouldBe 25
     }
+    test("testMaxK[-30]") {
+        findMaxK(intArrayOf(-30)) shouldBe -1
+    }
+    test("testMaxK[1, 2, 3]") {
+        findMaxK(intArrayOf(1, 2, 3)) shouldBe -1
+    }
 })
