@@ -9,23 +9,18 @@ fun findMaxK(nums: IntArray): Int {
             positives.add(num)
         }
     }
-    println("Negatives: $negatives")
-    println("Positives: $positives")
-    val neg = negatives.iterator()
-    val pos = positives.iterator()
+    var topNeg = negatives.poll()
+    var topPos = positives.poll()
 
-    var topNeg = neg.next()
-    var topPos = pos.next()
-
-    while (neg.hasNext() && pos.hasNext()) {
+    while (negatives.isNotEmpty() && positives.isNotEmpty()) {
         if (topPos == -topNeg) {
             return topPos
         }
 
         if (topPos > -topNeg) {
-            topPos = pos.next()
+            topPos = positives.poll()
         } else if (-topNeg > topPos) {
-            topNeg = neg.next()
+            topNeg = negatives.poll()
         }
     }
 
