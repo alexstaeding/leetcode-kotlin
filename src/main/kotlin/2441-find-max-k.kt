@@ -13,15 +13,10 @@ fun findMaxK(nums: IntArray): Int {
     var topPos = positives.poll() ?: return -1
 
     while (true) {
-        println("$topNeg $topPos")
-        if (topPos == -topNeg) {
-            return topPos
-        }
-
-        if (topPos > -topNeg) {
-            topPos = positives.poll() ?: return -1
-        } else if (-topNeg > topPos) {
-            topNeg = negatives.poll() ?: return -1
+        when {
+            topPos == -topNeg -> return topPos
+            topPos > -topNeg -> topPos = positives.poll() ?: return -1
+            -topNeg > topPos -> topNeg = negatives.poll() ?: return -1
         }
     }
 }
