@@ -11,4 +11,7 @@ class CompareVersionTest : FunSpec({
     test("compareVersion(\"0.1\", \"1.1\")") {
         compareVersion("0.1", "1.1") shouldBe -1
     }
+    test("compareVersion(\"1.0.1\", \"1\")") {
+        compareVersion("1.0.1", "1") shouldBe 1
+    }
 })
