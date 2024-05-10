@@ -6,9 +6,10 @@ fun kthSmallestPrimeFraction(arr: IntArray, k: Int): IntArray {
     var maxLeft = 0
     var lastBest = 0
     repeat(k) {
-        val best = (0..maxLeft + 1)
-            .minBy { arr[it].toDouble() / arr[pairs[it]].toDouble() }
-        maxLeft = kotlin.math.min(kotlin.math.max(maxLeft, best + 1), arr.lastIndex - 2)
+        val best = (0..maxLeft + 1).minBy { arr[it].toDouble() / arr[pairs[it]].toDouble() }
+        if (best > maxLeft && best < arr.lastIndex - 1) {
+            maxLeft = best
+        }
         pairs[best]--
         lastBest = best
     }
