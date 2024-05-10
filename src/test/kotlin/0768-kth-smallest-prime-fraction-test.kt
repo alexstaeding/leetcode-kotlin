@@ -14,4 +14,7 @@ class KthSmallestPrimeFractionTest : FunSpec({
     test("kthSmallestPrimeFraction([1, 13, 17, 59], 6)") {
         kthSmallestPrimeFraction(intArrayOf(1, 13, 17, 59), 6) shouldBe intArrayOf(13, 17)
     }
+    test("kthSmallestPrimeFraction([[1, 29, 47], 1)") {
+        kthSmallestPrimeFraction(intArrayOf(1, 29, 47), 1) shouldBe intArrayOf(1, 47)
+    }
 })

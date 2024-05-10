@@ -1,6 +1,6 @@
 fun kthSmallestPrimeFraction(arr: IntArray, k: Int): IntArray {
-    if (arr.size == 2) {
-        return arr
+    if (k == 1) {
+        return intArrayOf(arr.first(), arr.last())
     }
     val pairs = IntArray(arr.size - 1) { arr.lastIndex }
     var maxLeft = 0
