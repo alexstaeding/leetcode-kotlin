@@ -1,10 +1,8 @@
 import kotlin.math.abs
-import kotlin.math.pow
 
 fun maximumSafenessFactor(grid: List<List<Int>>): Int {
     data class Pos(val x: Int, val y: Int) {
         fun manhattan(other: Pos) = abs(x - other.x) + abs(y - other.y)
-        fun euclideanSquared(other: Pos) = (x - other.x).toDouble().pow(2) + (y - other.y).toDouble().pow(2)
         override fun toString(): String = "($x, $y)"
     }
 
@@ -17,20 +15,30 @@ fun maximumSafenessFactor(grid: List<List<Int>>): Int {
 
     val target = Pos(grid.size - 1, grid.size - 1)
 
-    val queue = java.util.PriorityQueue<Node>(
-        Comparator.comparing { (pos) -> pos.euclideanSquared(target) - thieves.minOf { it.manhattan(pos) } })
+    val queue = java.util.PriorityQueue(
+        Comparator.comparing<Node, Int> { (pos) -> grid[pos.y][pos.x] }
+            .thenComparing { (pos) -> pos.manhattan(target) - thieves.minOf { it.manhattan(pos) } }
+    )
 
     queue.add(Node(Pos(0, 0)))
 
     while (queue.isNotEmpty()) {
         val current = queue.poll()
         if (current.pos == target) {
+            println("Found: $current")
             return generateSequence(current) { it.prev }.minOf { (pos) -> thieves.minOf { it.manhattan(pos) } }
         }
-        if (current.pos.x > 1) queue.add(Node(current.pos.copy(x = current.pos.x - 1), current))
-        if (current.pos.x < target.x) queue.add(Node(current.pos.copy(x = current.pos.x + 1), current))
-        if (current.pos.y > 1) queue.add(Node(current.pos.copy(y = current.pos.y - 1), current))
-        if (current.pos.y < target.y) queue.add(Node(current.pos.copy(y = current.pos.y + 1), current))
+        sequenceOf(
+            current.pos.copy(y = current.pos.y + 1),
+            current.pos.copy(x = current.pos.x + 1),
+            current.pos.copy(x = current.pos.x - 1),
+            current.pos.copy(y = current.pos.y - 1),
+        ).filter { candidate ->
+            candidate.x in grid.indices && candidate.y in grid.indices &&
+                generateSequence(current) { it.prev }.none { it.pos == candidate }
+        }.forEach { pos ->
+            queue.add(Node(pos, current))
+        }
     }
     return 0
 }

@@ -30,4 +30,36 @@ class SafestPathTest : FunSpec({
             ),
         ) shouldBe 2
     }
+    test("maximumSafenessFactor([[0,1,1],[0,1,1],[0,0,0]])") {
+        maximumSafenessFactor(
+            listOf(
+                listOf(0, 1, 1),
+                listOf(0, 1, 1),
+                listOf(0, 0, 0)
+            ),
+        ) shouldBe 1
+    }
+    test("maximumSafenessFactor([[0,0,1],[0,0,0],[0,0,1]])") {
+        maximumSafenessFactor(
+            listOf(
+                listOf(0, 0, 1),
+                listOf(0, 0, 0),
+                listOf(0, 0, 1)
+            ),
+        ) shouldBe 0
+    }
+    test("maximumSafenessFactor([[0,0,0],[0,1,1],[0,0,0]])") {
+        maximumSafenessFactor(
+            listOf(
+                listOf(0, 0, 0),
+                listOf(0, 1, 1),
+                listOf(0, 0, 0)
+            ),
+        ) shouldBe 1
+    }
+    test("maximumSafenessFactor([[..14x0..1..14x0..]]") {
+        val grid = MutableList(29) { MutableList(29) { 0 } }
+        grid[14][14] = 1
+        maximumSafenessFactor(grid) shouldBe 14
+    }
 })
