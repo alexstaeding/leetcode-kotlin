@@ -1,5 +1,42 @@
 import kotlin.math.abs
 
+
+fun generateSafeness(grid: List<List<Int>>): List<List<Int>> {
+    data class Pos(val x: Int, val y: Int)
+
+    val thieves: List<Pos> = grid.map { it.withIndex() }.withIndex()
+        .flatMap { (y, v) -> v.filter { it.value == 1 }.map { (x) -> Pos(x, y) } }
+
+    val safeness = MutableList(grid.size) { MutableList(grid.size) { 0 } }
+    val alreadySet = LinkedHashSet<Pos>(grid.size * grid.size)
+    var currentRound = LinkedHashSet<Pos>(grid.size * grid.size)
+    currentRound.addAll(thieves)
+    alreadySet.addAll(thieves)
+    var roundNumber = 0
+    while (currentRound.isNotEmpty()) {
+        val nextRound = LinkedHashSet<Pos>()
+        for (pos in currentRound) {
+            safeness[pos.y][pos.x] = roundNumber
+            sequenceOf(
+                pos.copy(y = pos.y + 1),
+                pos.copy(x = pos.x + 1),
+                pos.copy(x = pos.x - 1),
+                pos.copy(y = pos.y - 1),
+            ).filter { candidate ->
+                candidate.x in grid.indices && candidate.y in grid.indices &&
+                    candidate !in alreadySet
+            }.forEach {
+                nextRound.add(it)
+                alreadySet.add(it)
+            }
+        }
+        currentRound = nextRound
+        roundNumber++
+
+    }
+    return safeness
+}
+
 fun maximumSafenessFactor(grid: List<List<Int>>): Int {
     data class Pos(val x: Int, val y: Int) {
         fun manhattan(other: Pos) = abs(x - other.x) + abs(y - other.y)
@@ -12,11 +49,7 @@ fun maximumSafenessFactor(grid: List<List<Int>>): Int {
 
     operator fun List<List<Int>>.get(pos: Pos) = this[pos.y][pos.x]
 
-    val thieves: List<Pos> = grid.map { it.withIndex() }.withIndex()
-        .flatMap { (y, v) -> v.filter { it.value == 1 }.map { (x) -> Pos(x, y) } }
-
-    val safeness: List<List<Int>> = grid.map { it.withIndex() }.withIndex()
-        .map { (y, row) -> row.map { (x) -> Pos(x, y).let { pos -> thieves.minOf { it.manhattan(pos) } } } }
+    val safeness = generateSafeness(grid)
 
     val target = Pos(grid.size - 1, grid.size - 1)
 
