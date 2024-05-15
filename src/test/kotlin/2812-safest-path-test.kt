@@ -70,4 +70,12 @@ class SafestPathTest : FunSpec({
         grid[7][8] = 1
         maximumSafenessFactor(grid) shouldBe 6
     }
+    test("maximumSafenessFactory[[..39x0..]") {
+        val grid = MutableList(39) { MutableList(39) { 0 } }
+        grid[17][19] = 1
+        grid[18][18] = 1
+        grid[19][20] = 1
+        grid[21][19] = 1
+        maximumSafenessFactor(grid) shouldBe 17
+    }
 })

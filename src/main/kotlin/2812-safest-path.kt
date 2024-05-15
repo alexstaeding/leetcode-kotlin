@@ -38,35 +38,33 @@ fun generateSafeness(grid: List<List<Int>>): List<List<Int>> {
 }
 
 fun maximumSafenessFactor(grid: List<List<Int>>): Int {
+
+    val safeness = generateSafeness(grid)
+
     data class Pos(val x: Int, val y: Int) {
         fun manhattan(other: Pos) = abs(x - other.x) + abs(y - other.y)
         override fun toString(): String = "($x, $y)"
     }
 
-    data class Node(val pos: Pos, val prev: Node? = null) {
-        override fun toString(): String = pos.toString() + if (prev != null) " <- $prev" else ""
-    }
+    data class PathPos(val pos: Pos, val safenessSoFar: Int)
 
     operator fun List<List<Int>>.get(pos: Pos) = this[pos.y][pos.x]
-
-    val safeness = generateSafeness(grid)
 
     val target = Pos(grid.size - 1, grid.size - 1)
 
     val visited = mutableSetOf<Pos>()
 
     val queue = java.util.PriorityQueue(
-        Comparator.comparing<Node, Int> { (pos) -> -safeness[pos] }
-            .thenComparing { (pos) -> pos.manhattan(target) })
+        Comparator.comparing<PathPos, Int> { -it.safenessSoFar })
 
-    queue.add(Node(Pos(0, 0)))
+    queue.add(PathPos(Pos(0, 0), safeness[0][0]))
 
     while (queue.isNotEmpty()) {
         val current = queue.poll()
         visited.add(current.pos)
         if (current.pos == target) {
             println("Found: $current")
-            return generateSequence(current) { it.prev }.minOf { (pos) -> safeness[pos] }
+            return current.safenessSoFar
         }
         sequenceOf(
             current.pos.copy(y = current.pos.y + 1),
@@ -74,10 +72,9 @@ fun maximumSafenessFactor(grid: List<List<Int>>): Int {
             current.pos.copy(x = current.pos.x - 1),
             current.pos.copy(y = current.pos.y - 1),
         ).filter { candidate ->
-            candidate !in visited && candidate.x in grid.indices && candidate.y in grid.indices &&
-                generateSequence(current) { it.prev }.none { it.pos == candidate }
+            candidate !in visited && candidate.x in grid.indices && candidate.y in grid.indices
         }.forEach { pos ->
-            queue.add(Node(pos, current))
+            queue.add(PathPos(pos, minOf(current.safenessSoFar, safeness[pos])))
         }
     }
     return 0
