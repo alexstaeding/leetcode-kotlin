@@ -8,6 +8,25 @@ class TreeNode(var `val`: Int) {
     override fun toString(): String {
         return "Node(value=$`val`, left=${left?.toString()}, right=${right?.toString()})"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TreeNode) return false
+
+        if (`val` != other.`val`) return false
+        if (left != other.left) return false
+        if (right != other.right) return false
+
+        return true
+
+    }
+
+    override fun hashCode(): Int {
+        var result = `val`
+        result = 31 * result + (left?.hashCode() ?: 0)
+        result = 31 * result + (right?.hashCode() ?: 0)
+        return result
+    }
 }
 
 fun List<Int?>.toTree(): TreeNode? {
